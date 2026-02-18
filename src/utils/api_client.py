@@ -26,7 +26,15 @@ def save_token(token: str):
 
 
 def load_token() -> str | None:
-    """Loads the JWT token from the file."""
+    """Loads the JWT token.
+
+    Priority order:
+    1. AUTHORIZATION_TOKEN environment variable (or --token CLI option)
+    2. Token stored in the local token file
+    """
+    env_token = os.environ.get("AUTHORIZATION_TOKEN")
+    if env_token:
+        return env_token.strip()
     if TOKEN_FILE.exists():
         return TOKEN_FILE.read_text().strip()
     return None

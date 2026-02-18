@@ -58,6 +58,16 @@ def login(ctx, email, password, file):
         password_prompt = click.prompt("User's password", hide_input=True)
         data = {"email": email_prompt, "password": password_prompt}
 
+    # Warn if an external token is active (via --token or AUTHORIZATION_TOKEN env var)
+    token_override = ctx.obj.get('TOKEN_OVERRIDE')
+    if token_override:
+        token_source = ctx.obj.get('TOKEN_SOURCE')
+        source = "AUTHORIZATION_TOKEN env var" if token_source == 'env' else "--token option"
+        console.print(
+            f"⚠️  [bold yellow]Warning:[/bold yellow] An external token is set via {source}. "
+            "It will take precedence over the login token."
+        )
+
     console.print(f"Attempting to log in as [cyan]{data['email']}[/cyan]...")
     response = make_request("POST", api_url, "/auth/login", json=data)
 

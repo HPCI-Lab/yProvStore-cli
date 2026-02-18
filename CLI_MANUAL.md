@@ -2,7 +2,7 @@
 
 Here you can find detailed explanations and usage examples for each command available in the `yProvStore` CLI.
 
-You can configure the API server URL using the `--api-url` option or the `YPROV_API_URL` environment variable as described in the [README](README.md#configuration).
+You can configure the API server URL using the `--api-url` option or the `YPROV_API_URL` environment variable, and provide an external authentication token using the `--token` option or the `AUTHORIZATION_TOKEN` environment variable, as described in the [README](README.md#configuration).
 
 ## Table of Contents
 - [Available Commands](#available-commands)
@@ -53,6 +53,8 @@ yprov <command> --help
 
 First, you need to register and log in to get an access token. The token is stored locally and used for all authenticated requests.
 
+Alternatively, if you already have a valid bearer token, you can skip login entirely and provide it via the `--token` option or the `AUTHORIZATION_TOKEN` environment variable (see [Configuration](README.md#authentication-token-override)).
+
   * **Sign up** for a new account.
     ```bash
     yprov auth signup
@@ -61,6 +63,8 @@ First, you need to register and log in to get an access token. The token is stor
     ```bash
     yprov auth login
     ```
+    > **Note:** If an external token is active (via `--token` or `AUTHORIZATION_TOKEN`), a warning will be shown indicating it takes precedence over the login token.
+
   * **Verify** that your token is valid and see which user you are logged in as.
     ```bash
     yprov auth verify

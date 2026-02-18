@@ -89,6 +89,8 @@ yprov <command> --help
 
 ## Configuration
 
+### API Server URL
+
 The CLI defaults to connecting to `http://127.0.0.1:8000`. You can specify a different API server URL in two ways:
 
 1.  **Using the `--api-url` option:**
@@ -112,6 +114,42 @@ The CLI defaults to connecting to `http://127.0.0.1:8000`. You can specify a dif
     ```bash
     yprov check
     ```
+
+### Authentication Token Override
+
+By default, the CLI uses the token obtained through `yprov auth login`, which is stored locally.
+If you already have a valid bearer token (e.g., obtained from another service or tool), you can provide it directly instead of logging in:
+
+1.  **Using the `--token` option:**
+
+    ```bash
+    yprov --token <your_token> documents list
+    ```
+
+2.  **Setting the `AUTHORIZATION_TOKEN` environment variable:**
+
+    ```bash
+    export AUTHORIZATION_TOKEN="<your_token>"
+    ```
+    > Or on Windows:
+    > ```cmd
+    > set AUTHORIZATION_TOKEN="<your_token>"
+    > ```
+
+When an external token is provided (via `--token` or the environment variable), it **takes precedence** over the locally stored login token.
+
+> **Note:** If you run `yprov auth login` while an external token is active, a warning will be displayed to remind you that the external token will override the login token.
+
+### Global Options Placement
+
+The global options `--api-url` and `--token` can be placed **anywhere** in the command line — before or after the subcommand:
+
+```bash
+# All of these are equivalent:
+yprov --token <token> auth verify
+yprov auth verify --token <token>
+yprov auth --token <token> verify
+```
 
 -----
 
