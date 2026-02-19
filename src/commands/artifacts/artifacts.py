@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 
 from utils.api_client import make_request
+from .related import related
 
 
 console = Console()
@@ -353,3 +354,6 @@ def get_artifact_info(ctx, pid):
     table.add_row("SHA-256 Hash", artifact.get('hash', 'N/A') or 'N/A')
     
     console.print(table)
+
+
+artifacts.add_command(related)

@@ -8,12 +8,14 @@ You can configure the API server URL using the `--api-url` option or the `YPROV_
 - [Available Commands](#available-commands)
 - [Authentication](#authentication)
 - [Managing Documents](#managing-documents)
+- [Managing Document Related PIDs](#managing-document-related-pids)
 - [Managing Document Permissions](#managing-document-permissions)
 - [Managing Document Metadata](#managing-document-metadata)
 - [Graph Operations on Documents](#graph-operations-on-documents)
 - [Blockchain Operations](#blockchain-operations)
 - [Managing PIDs](#managing-pids)
 - [Managing Artifacts](#managing-artifacts)
+- [Managing Artifact Related PIDs](#managing-artifact-related-pids)
 - [Troubleshooting CLI](#troubleshooting-cli)
 
 ## Available Commands
@@ -27,6 +29,8 @@ yprov auth logout
 yprov documents create --json-file <path/to/document.json> [--parent-pid <parent_pid>] [--compressed] [--trustworthy] [--<metadata_field> <value> ...]
 yprov documents list [--page <page_number>] [--page-size <page_size>] [--updated-after <timestamp>] [--created-after <timestamp>]
 yprov documents download <document_pid> [--output-folder <path>] [--output <file_path>] [--compressed] [--debug]
+yprov documents related list <document_pid>
+yprov documents related add <document_pid> --related-pid <pid> [--related-pid <pid> ...]
 yprov documents permissions add <document_pid> --user-email <email> --permission-level <level>
 yprov documents permissions list <document_pid>
 yprov documents permissions delete <document_pid> --user-email <email>
@@ -41,6 +45,8 @@ yprov blockchain list --start-time <start_time> --end-time <end_time> [--format 
 yprov blockchain test
 yprov pids list [--page <page_number>] [--page-size <page_size>]
 yprov pids get <pid>
+yprov artifacts related list <artifact_pid>
+yprov artifacts related add <artifact_pid> --related-pid <pid> [--related-pid <pid> ...]
 ```
 
 You can also check the help message for each command at any level by running:
@@ -323,6 +329,45 @@ Once authenticated, you can create, list, and download provenance documents.
         ```bash
         yprov documents download <your_document_pid> --output /path/to/my_doc.json
         ```
+
+-----
+
+## Managing Document Related PIDs
+
+You can manage `related_pids` for any document PID record.
+
+* **List related PIDs for a document**
+
+  ```bash
+  yprov documents related list <document_pid>
+  ```
+
+  This command returns the current list of related PIDs for the specified document.
+
+* **Add related PIDs to a document**
+
+  ```bash
+  yprov documents related add <document_pid> --related-pid <pid>
+  ```
+
+  You can provide multiple values by repeating `--related-pid`:
+
+  ```bash
+  yprov documents related add <document_pid> \
+    --related-pid <pid_1> \
+    --related-pid <pid_2>
+  ```
+
+  You can also pass comma-separated values:
+
+  ```bash
+  yprov documents related add <document_pid> --related-pid "<pid_1>,<pid_2>"
+  ```
+
+  Notes:
+  - The list is additive: provided PIDs are added to existing `related_pids`.
+  - Duplicate values in input are automatically deduplicated.
+  - You must have write permission on the target document.
 
 -----
 
@@ -863,6 +908,43 @@ The `artifacts` group provides commands to interact with artifact storage.
     ```bash
     yprov artifacts get 21.T11961/abc123
     ```
+
+## Managing Artifact Related PIDs
+
+You can manage `related_pids` for any artifact PID record.
+
+* **List related PIDs for an artifact**
+
+  ```bash
+  yprov artifacts related list <artifact_pid>
+  ```
+
+  This command returns the current list of related PIDs for the specified artifact.
+
+* **Add related PIDs to an artifact**
+
+  ```bash
+  yprov artifacts related add <artifact_pid> --related-pid <pid>
+  ```
+
+  You can provide multiple values by repeating `--related-pid`:
+
+  ```bash
+  yprov artifacts related add <artifact_pid> \
+    --related-pid <pid_1> \
+    --related-pid <pid_2>
+  ```
+
+  You can also pass comma-separated values:
+
+  ```bash
+  yprov artifacts related add <artifact_pid> --related-pid "<pid_1>,<pid_2>"
+  ```
+
+  Notes:
+  - The list is additive: provided PIDs are added to existing `related_pids`.
+  - Duplicate values in input are automatically deduplicated.
+  - You must be the owner of the target artifact.
 
 
 ## Troubleshooting CLI
